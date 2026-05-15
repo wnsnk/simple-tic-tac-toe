@@ -43,11 +43,19 @@ def turn(player: Player, choice):
 game_over = False
 while not game_over:
     # player 1
+    if not tic_tac_toe_grid.available_choices:
+        print('draw!')
+        game_over = True
+        quit()
     choice = input(
         'PLAYER 1: Please select where to mark your symbol (1 - 9): ')
     turn(player=PLAYER_1, choice=choice)
     time.sleep(1)
 
+    if not tic_tac_toe_grid.available_choices:
+        print('draw!')
+        game_over = True
+        quit()
     if multiplayer:
         choice = input(
             'PLAYER 2: Please select where to mark your symbol (1 - 9): ')
@@ -55,6 +63,7 @@ while not game_over:
         time.sleep(1)
     else:
         print('computer is choosing....')
-        choice = random.choice(tic_tac_toe_grid.available_choices)
+        choice = PLAYER_2.ai_choose(
+            available_choices=tic_tac_toe_grid.available_choices, squares_taken_opponent=PLAYER_1.squares_taken)
         turn(player=PLAYER_2, choice=choice)
         time.sleep(1)
