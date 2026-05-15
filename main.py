@@ -1,44 +1,37 @@
 import random
 import time
 
-
+from grid import TicTacToeGrid, board
+from player import Player
+from win_checker import Winchecker
 multiplayer = False
-PLAYER_1 = 'X'
-PLAYER_2 = 'O'
+PLAYER_1 = Player('X')
+PLAYER_2 = Player('O')
 
-available_choices = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-marked_x = []
-marked_o = []
-
-board = '''
-1|2|3
------
-4|5|6
------
-7|8|9
-'''
+tic_tac_toe_grid = TicTacToeGrid()
 
 
 print('Welcome to Tic Tac Toe')
 print(board)
 
 
-def turn(player, choice):
+def turn(player: Player, choice):
     global board
     valid_choice = False
     while not valid_choice:
-        if choice in available_choices:
-            board = board.replace(choice, player)
-            available_choices.remove(choice)
-            if player == 'X':
-                marked_x.append(choice)
-                game_over = check_for_win(marked_x)
-            else:
-                marked_o.append(choice)
-                game_over = check_for_win(marked_o)
-            print(board)
+        if choice in tic_tac_toe_grid.available_choices:
+            board = board.replace(choice, player.symbol)
+            temp_board = board
+            for character in tic_tac_toe_grid.available_choices:
+                temp_board = temp_board.replace(character, ' ')
+            tic_tac_toe_grid.available_choices.remove(choice)
+
+            player.squares_taken.append(choice)
+            game_over = Winchecker(player.squares_taken).result
+
+            print(temp_board)
             if game_over:
-                print(f'{player} has won!!!')
+                print(f'{player.symbol} has won!!!')
                 quit()
             return
         else:
@@ -47,44 +40,21 @@ def turn(player, choice):
                 'Please select where to put your dingetje (1 - 9)')
 
 
-def check_for_win(marked_boxes):
-    wins = [['1', '2', '3'],
-            ['4', '5', '6'],
-            ['7', '8', '9'],
-            ['1', '4', '7'],
-            ['2', '5', '8'],
-            ['3', '6', '9'],
-            ['1', '5', '9'],
-            ['3', '5', '7']]
-
-    for possible_win in wins:
-        win = False
-        for place in possible_win:
-            if place not in marked_boxes:
-                win = False
-                break
-            else:
-                win = True
-        if win == True:
-            break
-
-    return win
-
-
 game_over = False
 while not game_over:
     # player 1
     choice = input(
-        'PLAYER 1: Please select where to put your dingetje (1 - 9)')
+        'PLAYER 1: Please select where to mark your symbol (1 - 9): ')
     turn(player=PLAYER_1, choice=choice)
+    time.sleep(1)
 
     if multiplayer:
         choice = input(
-            'PLAYER 2: Please select where to put your dingetje (1 - 9)')
+            'PLAYER 2: Please select where to mark your symbol (1 - 9): ')
         turn(player=PLAYER_2, choice=choice)
         time.sleep(1)
     else:
         print('computer is choosing....')
-        choice = random.choice(available_choices)
+        choice = random.choice(tic_tac_toe_grid.available_choices)
         turn(player=PLAYER_2, choice=choice)
         time.sleep(1)
