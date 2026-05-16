@@ -1,4 +1,4 @@
-from win_checker import ALL_POSSIBLE_WINS
+from modules.win_checker import ALL_POSSIBLE_WINS
 import random
 
 

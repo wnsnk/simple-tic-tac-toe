@@ -1,8 +1,8 @@
 import time
 
-from grid import TicTacToeGrid, board
-from player import Player
-from win_checker import Winchecker
+from modules.grid import TicTacToeGrid, board
+from modules.player import Player
+from modules.win_checker import Winchecker
 multiplayer = False
 PLAYER_1 = Player('X')
 PLAYER_2 = Player('O')
