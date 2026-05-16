@@ -58,6 +58,7 @@ def ask_for_new_round():
 
 
 def reset():
+    clear_screen()
     global board
     global PLAYER_1, PLAYER_2
     tic_tac_toe_grid.available_choices = [
@@ -67,6 +68,10 @@ def reset():
     board = fresh_board
     PLAYER_1.squares_taken = []
     PLAYER_2.squares_taken = []
+
+
+def clear_screen():
+    print('\n' * 50)
 
 
 def game():
