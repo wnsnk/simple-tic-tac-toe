@@ -1,4 +1,3 @@
-import random
 import time
 
 from grid import TicTacToeGrid, board
@@ -9,10 +8,7 @@ PLAYER_1 = Player('X')
 PLAYER_2 = Player('O')
 
 tic_tac_toe_grid = TicTacToeGrid()
-
-
-print('Welcome to Tic Tac Toe')
-print(board)
+fresh_board = board
 
 
 def turn(player: Player, choice):
@@ -32,7 +28,8 @@ def turn(player: Player, choice):
             print(temp_board)
             if game_over:
                 print(f'{player.symbol} has won!!!')
-                quit()
+                ask_for_new_round()
+
             return
         else:
             print('That\'s not a valid option!!!!')
@@ -40,32 +37,61 @@ def turn(player: Player, choice):
                 'Please select where to put your dingetje (1 - 9)')
 
 
-game_over = False
-while not game_over:
-    # player 1
+def check_for_draw():
     if not tic_tac_toe_grid.available_choices:
         print('draw!')
-        game_over = True
-        quit()
-    choice = input(
-        'PLAYER 1: Please select where to mark your symbol (1 - 9): ')
-    turn(player=PLAYER_1, choice=choice)
-    time.sleep(1)
+        ask_for_new_round()
 
-    if not tic_tac_toe_grid.available_choices:
-        print('draw!')
-        game_over = True
-        quit()
-    if multiplayer:
+
+def ask_for_new_round():
+    valid_option = False
+    while not valid_option:
+        try_again = input(
+            'Would you like to play another game? (Y/N) \n').lower()
+        if try_again != 'y' and try_again != 'n':
+            print('Not a valid character. Try again.')
+        else:
+            if try_again == 'y':
+                game()
+            else:
+                quit()
+
+
+def reset():
+    global board
+    global PLAYER_1, PLAYER_2
+    tic_tac_toe_grid.available_choices = [
+        '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    print('Welcome to Tic Tac Toe')
+    print(fresh_board)
+    board = fresh_board
+    PLAYER_1.squares_taken = []
+    PLAYER_2.squares_taken = []
+
+
+def game():
+    reset()
+    game_over = False
+    while not game_over:
+        # player 1
+        check_for_draw()
         choice = input(
-            'PLAYER 2: Please select where to mark your symbol (1 - 9): ')
-        turn(player=PLAYER_2, choice=choice)
-        time.sleep(1)
-    else:
-        print('computer is choosing....')
-        choice = PLAYER_2.ai_choose(
-            available_choices=tic_tac_toe_grid.available_choices, squares_taken_opponent=PLAYER_1.squares_taken)
-        turn(player=PLAYER_2, choice=choice)
+            'PLAYER 1: Please select where to mark your symbol (1 - 9): ')
+        turn(player=PLAYER_1, choice=choice)
         time.sleep(1)
 
-#  save
+        check_for_draw()
+        if multiplayer:
+            choice = input(
+                'PLAYER 2: Please select where to mark your symbol (1 - 9): ')
+            turn(player=PLAYER_2, choice=choice)
+            time.sleep(1)
+        else:
+            print('computer is choosing....')
+            choice = PLAYER_2.ai_choose(
+                available_choices=tic_tac_toe_grid.available_choices, squares_taken_opponent=PLAYER_1.squares_taken)
+            turn(player=PLAYER_2, choice=choice)
+            time.sleep(1)
+
+
+game()
